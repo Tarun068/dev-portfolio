@@ -5,7 +5,9 @@ import { IntroLoader, introSkipScript } from "@/components/intro-loader";
 import { PageCurtain } from "@/components/page-curtain";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { site } from "@/content/site";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 
 // Stand-in for Futura PT (see globals.css). To switch, load the licensed files with
@@ -63,6 +65,7 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-svh flex-col overflow-x-clip">
         <Providers>
+          <SmoothScroll />
           <a
             href="#content"
             className="fixed left-4 top-4 z-[95] -translate-y-24 bg-ink px-4 py-2 text-paper transition-transform focus:translate-y-0"

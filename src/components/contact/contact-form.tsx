@@ -48,7 +48,7 @@ function Field({
       </label>
       <div className="group relative">
         {multiline ? (
-          <textarea {...shared} rows={5} maxLength={5000} className={cn(shared.className, "h-[145px] resize-none py-3")} />
+          <textarea {...shared} rows={5} maxLength={5000} data-lenis-prevent className={cn(shared.className, "h-[145px] resize-none py-3")} />
         ) : (
           <input {...shared} type={type} className={cn(shared.className, "h-[54px]")} />
         )}

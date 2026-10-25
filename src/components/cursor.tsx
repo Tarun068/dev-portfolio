@@ -67,8 +67,10 @@ export function Cursor() {
 
   if (!enabled) return null;
 
-  const size = state.mode === "media" ? 104 : state.mode === "hover" ? 46 : 12;
+  const size = state.mode === "media" ? 104 : state.mode === "hover" ? 52 : 12;
   const media = state.mode === "media";
+  // Over links the dot opens into a hollow ring so it never covers the label underneath.
+  const ring = state.mode === "hover";
 
   return (
     <motion.div
@@ -77,7 +79,7 @@ export function Cursor() {
       style={{ x: sx, y: sy, mixBlendMode: media ? "normal" : "difference" }}
     >
       <motion.div
-        className="flex items-center justify-center rounded-full text-[15px] font-medium text-ink"
+        className="flex items-center justify-center rounded-full border-solid border-white text-[15px] font-medium text-ink"
         style={{ x: "-50%", y: "-50%" }}
         initial={false}
         animate={{
@@ -85,7 +87,8 @@ export function Cursor() {
           height: size,
           opacity: visible ? 1 : 0,
           scale: pressed ? 0.8 : 1,
-          backgroundColor: media ? state.color || "#fbb03b" : "#ffffff",
+          borderWidth: ring ? 1.5 : 0,
+          backgroundColor: media ? state.color || "#fbb03b" : ring ? "rgba(255,255,255,0)" : "#ffffff",
         }}
         transition={{ type: "spring", stiffness: 420, damping: 30, mass: 0.5 }}
       >

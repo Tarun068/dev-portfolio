@@ -2,7 +2,9 @@
 
 Portfolio site for Dev Patel (video editor & motion graphics, Toronto), built from the client layout `UI_02.pdf`.
 
-**Stack:** Next.js 16 (App Router, Cache Components) · TypeScript · Tailwind CSS v4 · Motion for React · next/image · Vimeo/YouTube embeds.
+**Stack:** Next.js 16 (App Router, Cache Components) · TypeScript · Tailwind CSS v4 · Motion for React · Lenis (smooth scrolling) · next/image · Vimeo/YouTube embeds.
+
+Smooth scrolling (`src/components/smooth-scroll.tsx`) eases mouse-wheel input only; touch scrolling stays native and reduced-motion users get normal scrolling. Scrollable areas inside the page need `data-lenis-prevent`.
 
 ## Run it
 
@@ -28,6 +30,7 @@ npm run build && npm start
 ## Editing content
 
 - **Projects:** `src/content/projects.ts`. Each project takes a `poster` (image in `/public`), a `vimeoId` / `youtubeId` / `videoSrc` for playback, an optional muted `previewSrc` loop (plays on hover and in the home hero), and `featured: true` to appear on the home slider. Without a poster, a placeholder frame is shown.
+- **Home "Selected work" backgrounds:** each category's `cover` in `src/content/projects.ts`. These are currently placeholder Unsplash photos; swap them for stills from Dev's own work before launch (local files in `/public` need no extra config).
 - **Site text, bio, taglines, portrait:** `src/content/site.ts`.
 - **CV:** replace `public/cv/dev-patel-cv.pdf` (currently a placeholder).
 - **Colours:** brand tokens in `src/app/globals.css` (`paper`, `ink`, `caption`, `sun`, `flame`, `sky`, `leaf`).

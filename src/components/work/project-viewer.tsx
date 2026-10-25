@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useLenis } from "lenis/react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MediaFrame } from "@/components/media/media-frame";
@@ -146,6 +147,14 @@ export function ProjectViewer({ project, prev, next, index, total, accent, label
       html.style.overflow = previous;
     };
   }, []);
+
+  // Freeze the smooth scroller underneath while the viewer is open.
+  const lenis = useLenis();
+  useEffect(() => {
+    if (!lenis) return;
+    lenis.stop();
+    return () => lenis.start();
+  }, [lenis]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {

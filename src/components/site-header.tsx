@@ -34,11 +34,11 @@ function RotatingTagline() {
   );
 }
 
-/** Text that rolls up to a duplicate of itself on hover. */
+/** Text that rolls up to a duplicate of itself on hover (the inner stack is two lines tall, so move it by half). */
 function RollText({ children }: { children: string }) {
   return (
     <span className="relative block h-[1.25em] overflow-hidden leading-[1.25em]">
-      <span className="block transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:-translate-y-full">
+      <span className="block transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:-translate-y-1/2 group-focus-visible:-translate-y-1/2">
         <span className="block">{children}</span>
         <span className="block" aria-hidden="true">
           {children}
@@ -48,18 +48,29 @@ function RollText({ children }: { children: string }) {
   );
 }
 
-function WorkMenu({ pathname, onWork, open }: { pathname: string; onWork: boolean; open: boolean }) {
-  const visible = onWork || open;
+// The Work sub-menu opens on hover (or focus) on every page, in its own panel so it reads over any content.
+const menuVariants = {
+  show: {
+    clipPath: "inset(0 0 0% 0)",
+    transition: { duration: 0.45, ease: easeOutExpo, staggerChildren: 0.04, delayChildren: 0.05 },
+  },
+  hidden: {
+    clipPath: "inset(0 0 100% 0)",
+    transition: { duration: 0.3, ease: easeOutExpo, staggerChildren: 0.02, staggerDirection: -1 },
+  },
+};
+
+function WorkMenu({ pathname, open }: { pathname: string; open: boolean }) {
   return (
     <AnimatePresence>
-      {visible ? (
+      {open ? (
         <motion.ul
           key="work-menu"
-          className="absolute right-0 top-full z-30 hidden flex-col items-end pt-2 md:flex"
+          className="absolute right-0 top-full z-30 hidden flex-col items-end border border-ink bg-paper py-3 pl-6 pr-5 shadow-[0_24px_48px_-28px_rgba(15,6,6,0.55)] md:flex"
           initial="hidden"
           animate="show"
           exit="hidden"
-          variants={{ show: { transition: { staggerChildren: 0.05 } }, hidden: { transition: { staggerChildren: 0.03, staggerDirection: -1 } } }}
+          variants={menuVariants}
         >
           {categories.map((c) => {
             const href = categoryHref(c.slug);
@@ -108,7 +119,7 @@ export function SiteHeader() {
   const activeHref =
     pathname === "/" ? "/" : navItems.find((n) => n.href !== "/" && pathname.startsWith(n.href))?.href;
 
-  // Hover dropdown for Work on non-work pages. Keyed to the pathname so it closes after navigating.
+  // Hover dropdown for Work. Keyed to the pathname so it closes after navigating.
   const [openAt, setOpenAt] = useState<string | null>(null);
   const workOpen = openAt === pathname;
 
@@ -142,6 +153,7 @@ export function SiteHeader() {
                   onPointerEnter={isWork ? () => setOpenAt(pathname) : undefined}
                   onPointerLeave={isWork ? () => setOpenAt(null) : undefined}
                   onFocus={isWork ? () => setOpenAt(pathname) : undefined}
+                  onKeyDown={isWork ? (e) => e.key === "Escape" && setOpenAt(null) : undefined}
                   onBlur={
                     isWork
                       ? (e) => {
@@ -170,7 +182,7 @@ export function SiteHeader() {
                       <RollText>{item.label}</RollText>
                     </span>
                   </Link>
-                  {isWork ? <WorkMenu pathname={pathname} onWork={onWork} open={workOpen} /> : null}
+                  {isWork ? <WorkMenu pathname={pathname} open={workOpen} /> : null}
                 </li>
               );
             })}

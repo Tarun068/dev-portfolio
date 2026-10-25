@@ -21,6 +21,8 @@ export type Category = {
   /** "list" = big rows (Films, Music Videos); "tabs" = two switchable grids. */
   layout: "list" | "tabs";
   tabs?: [Tab, Tab];
+  /** Background shown when this category is hovered in the home Work index. */
+  cover?: string;
 };
 
 export type Project = {
@@ -59,6 +61,10 @@ export const shapeRatio: Record<Shape, number> = {
   wide: 2,
 };
 
+// PLACEHOLDER covers: free Unsplash photos (Unsplash License) used only to preview the design.
+// Replace with stills from Dev's own work before launch, e.g. "/work/films-cover.jpg".
+const unsplash = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=2400&q=80`;
+
 export const categories: Category[] = [
   {
     slug: "films",
@@ -66,6 +72,7 @@ export const categories: Category[] = [
     accent: "sun",
     layout: "list",
     description: "Short films edited and directed by Dev Patel.",
+    cover: unsplash("photo-1612544409025-e1f6a56c1152"),
   },
   {
     slug: "youtube-socials",
@@ -77,6 +84,7 @@ export const categories: Category[] = [
       { id: "socials", label: "Socials", layout: "masonry" },
     ],
     description: "YouTube edits, reels, shorts and social-first content by Dev Patel.",
+    cover: unsplash("photo-1611784728558-6c7d9b409cdf"),
   },
   {
     slug: "music-videos",
@@ -84,6 +92,7 @@ export const categories: Category[] = [
     accent: "sky",
     layout: "list",
     description: "Music videos edited by Dev Patel.",
+    cover: unsplash("photo-1577042816206-2e85c23f2392"),
   },
   {
     slug: "motion-stills",
@@ -95,6 +104,7 @@ export const categories: Category[] = [
       { id: "stills", label: "Stills", layout: "masonry" },
     ],
     description: "Motion graphics, animation and still photography by Dev Patel.",
+    cover: unsplash("photo-1761319659783-cceb1973d6f8"),
   },
 ];
 
