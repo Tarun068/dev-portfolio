@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+/* Brand tokens from the client style guide (UI_02.pdf, last page). */
+@theme {
+  --color-paper: #fafafa;
+  --color-ink: #0f0606;
+  --color-caption: #bcbcbc;
+  --color-sun: #fbb03b;
+  --color-flame: #e54141;
+  --color-sky: #2d99ea;
+  --color-leaf: #22b573;
+
+  --ease-cine: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Futura PT is the specified family. Jost (a free geometric Futura revival) stands in
+   until licensed Futura PT files or an Adobe Fonts kit are added in layout.tsx. */
+@theme inline {
+  --font-sans: var(--font-futura), "Futura PT", Futura, ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-handwriting), "Comic Sans MS", cursive;
+}
+
+/* Content column: 1320px wide on desktop like the PDF (300px margins at 1920). */
+@utility container-site {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1384px;
+  padding-inline: 1rem;
+
+  @media (min-width: 640px) {
+    padding-inline: 2rem;
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-sun);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-sky);
+  outline-offset: 3px;
+}
+
+/* Hide the native cursor only when the custom one is active (fine pointers). */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* Intro loader is skipped for the rest of the session once seen (set before paint). */
+html[data-intro-seen] [data-intro] {
+  display: none;
+}
+
+/* Film grain used on placeholders and the dark viewer. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.09;
+  animation: grain 0.9s steps(4) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-6%, 4%); }
+  50% { transform: translate(5%, -7%); }
+  75% { transform: translate(-3%, -3%); }
+  100% { transform: translate(4%, 6%); }
+}
+
+/* Slow drifting glow inside placeholders. */
+@keyframes drift {
+  0% { transform: translate3d(-4%, -3%, 0) scale(1.15); }
+  50% { transform: translate3d(4%, 3%, 0) scale(1.25); }
+  100% { transform: translate3d(-4%, -3%, 0) scale(1.15); }
+}
+
+/* Masonry grid for Socials / Stills: square tiles span 4 row-units, taller shapes more.
+   Row unit is derived from the column width via container query units. */
+.masonry {
+  --cols: 2;
+  --gap: 4px;
+  container-type: inline-size;
+}
+
+@media (min-width: 768px) {
+  .masonry {
+    --cols: 4;
+    --gap: 6px;
+  }
+}
+
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--gap);
+  grid-auto-flow: dense;
+  grid-auto-rows: calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) / 4 - var(--gap) * 0.75);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain::after {
+    animation: none;
+  }
+}
