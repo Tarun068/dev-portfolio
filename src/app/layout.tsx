@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat, Jost } from "next/font/google";
 import { Cursor } from "@/components/cursor";
 import { IntroLoader, introSkipScript } from "@/components/intro-loader";
-import { PageCurtain } from "@/components/page-curtain";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
 import { SmoothScroll } from "@/components/smooth-scroll";
@@ -10,19 +8,9 @@ import { site } from "@/content/site";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
-// Stand-in for Futura PT (see globals.css). To switch, load the licensed files with
-// next/font/local and keep the same CSS variable name.
-const futura = Jost({
-  variable: "--font-futura",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
-const handwriting = Caveat({
-  variable: "--font-handwriting",
-  subsets: ["latin"],
-  weight: ["500"],
-});
+// The client's Adobe Fonts web project: Futura PT (Light 300 … Heavy 800) and Skia (used for the
+// Bio notes). Served by Adobe under the client's licence; families are set in globals.css.
+const ADOBE_FONTS_KIT = "https://use.typekit.net/xks4ram.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -56,8 +44,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children, modal }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${futura.variable} ${handwriting.variable} antialiased`} suppressHydrationWarning>
+    <html lang="en" className="antialiased" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://use.typekit.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://p.typekit.net" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={ADOBE_FONTS_KIT} />
         <script dangerouslySetInnerHTML={{ __html: introSkipScript }} />
         <noscript>
           <style>{"[data-intro]{display:none}"}</style>
@@ -77,7 +68,6 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
             {children}
           </main>
           {modal}
-          <PageCurtain />
           <IntroLoader />
           <Cursor />
         </Providers>

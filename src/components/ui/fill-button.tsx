@@ -25,7 +25,7 @@ export function FillButton(props: AsLink | AsButton) {
   };
 
   const className = cn(
-    "group relative inline-flex h-[54px] min-w-[168px] items-center justify-center overflow-hidden bg-ink px-10 text-[19px] text-paper transition-colors duration-300",
+    "group relative inline-flex h-[54px] min-w-[168px] items-center justify-center overflow-hidden bg-ink px-10 text-[18px] text-paper lg:text-[21px] transition-colors duration-300",
     "disabled:cursor-not-allowed disabled:opacity-60",
     fill.on && "text-ink",
     props.className,
@@ -50,20 +50,20 @@ export function FillButton(props: AsLink | AsButton) {
   if (props.href !== undefined) {
     if (props.download !== undefined || !props.href.startsWith("/")) {
       return (
-        <a href={props.href} download={props.download} className={className} data-cursor="hover" {...handlers}>
+        <a href={props.href} download={props.download} className={className} {...handlers}>
           {content}
         </a>
       );
     }
     return (
-      <Link href={props.href} className={className} data-cursor="hover" {...handlers}>
+      <Link href={props.href} className={className} {...handlers}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button type={props.type ?? "button"} disabled={props.disabled} className={className} data-cursor="hover" {...handlers}>
+    <button type={props.type ?? "button"} disabled={props.disabled} className={className} {...handlers}>
       {content}
     </button>
   );

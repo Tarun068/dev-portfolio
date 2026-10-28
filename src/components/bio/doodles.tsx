@@ -1,9 +1,4 @@
-"use client";
-
-import { motion, useInView } from "motion/react";
-import { useRef } from "react";
-import { useIntroReady } from "@/lib/hooks";
-import { cn, easeOutExpo } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type Point = [number, number];
 
@@ -26,29 +21,22 @@ function scribblePath(w: number, h: number, seed: number) {
   return d;
 }
 
-/** Hand-drawn ellipse that draws itself around its children. */
+/** Hand-drawn ellipse around its children (static, as in the PDF). */
 export function Scribble({
   children,
   className,
   seed = 1,
-  delay = 0,
   width = 240,
   height = 110,
 }: {
   children: React.ReactNode;
   className?: string;
   seed?: number;
-  delay?: number;
   width?: number;
   height?: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const seen = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
-  const ready = useIntroReady();
-  const play = ready && seen;
-
   return (
-    <div ref={ref} className={cn("relative flex items-center justify-center", className)}>
+    <div className={cn("relative flex items-center justify-center", className)}>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="none"
@@ -56,25 +44,15 @@ export function Scribble({
         fill="none"
         aria-hidden="true"
       >
-        <motion.path
+        <path
           d={scribblePath(width, height, seed)}
           stroke="currentColor"
           strokeWidth={1.3}
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={play ? { pathLength: 1, opacity: 1 } : undefined}
-          transition={{ pathLength: { duration: 1.4, delay, ease: [0.65, 0, 0.35, 1] }, opacity: { duration: 0.01, delay } }}
         />
       </svg>
-      <motion.span
-        className="relative"
-        initial={{ opacity: 0, scale: 0.6, rotate: -8 }}
-        animate={play ? { opacity: 1, scale: 1, rotate: -3 } : undefined}
-        transition={{ type: "spring", stiffness: 240, damping: 14, delay: delay + 0.2 }}
-      >
-        {children}
-      </motion.span>
+      <span className="relative -rotate-3">{children}</span>
     </div>
   );
 }
@@ -86,31 +64,16 @@ function arrowHead(c2: Point, end: Point, len = 18, spread = 0.5) {
   return `M${a[0].toFixed(1)} ${a[1].toFixed(1)} L${end[0]} ${end[1]} L${b[0].toFixed(1)} ${b[1].toFixed(1)}`;
 }
 
-export type Curve = { from: Point; c1: Point; c2: Point; to: Point; delay?: number };
+export type Curve = { from: Point; c1: Point; c2: Point; to: Point };
 
-/** Curved arrows that draw themselves, positioned in a shared viewBox over the composition. */
+/** Curved arrows in a shared viewBox over the composition. */
 export function DrawnArrows({ curves, viewBox, className }: { curves: Curve[]; viewBox: string; className?: string }) {
-  const ref = useRef<SVGSVGElement>(null);
-  const seen = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
-  const ready = useIntroReady();
-  const play = ready && seen;
-
   return (
-    <svg ref={ref} viewBox={viewBox} fill="none" aria-hidden="true" className={cn("pointer-events-none overflow-visible", className)}>
-      {curves.map(({ from, c1, c2, to, delay = 0 }, i) => (
+    <svg viewBox={viewBox} fill="none" aria-hidden="true" className={cn("pointer-events-none overflow-visible", className)}>
+      {curves.map(({ from, c1, c2, to }, i) => (
         <g key={i} stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-          <motion.path
-            d={`M${from[0]} ${from[1]} C${c1[0]} ${c1[1]} ${c2[0]} ${c2[1]} ${to[0]} ${to[1]}`}
-            initial={{ pathLength: 0 }}
-            animate={play ? { pathLength: 1 } : undefined}
-            transition={{ duration: 1.1, delay, ease: [0.65, 0, 0.35, 1] }}
-          />
-          <motion.path
-            d={arrowHead(c2, to)}
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={play ? { pathLength: 1, opacity: 1 } : undefined}
-            transition={{ duration: 0.35, delay: delay + 1.05, ease: easeOutExpo }}
-          />
+          <path d={`M${from[0]} ${from[1]} C${c1[0]} ${c1[1]} ${c2[0]} ${c2[1]} ${to[0]} ${to[1]}`} />
+          <path d={arrowHead(c2, to)} />
         </g>
       ))}
     </svg>

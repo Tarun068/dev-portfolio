@@ -14,11 +14,12 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Futura PT is the specified family. Jost (a free geometric Futura revival) stands in
-   until licensed Futura PT files or an Adobe Fonts kit are added in layout.tsx. */
-@theme inline {
-  --font-sans: var(--font-futura), "Futura PT", Futura, ui-sans-serif, system-ui, sans-serif;
-  --font-hand: var(--font-handwriting), "Comic Sans MS", cursive;
+/* Fonts from the client's Adobe Fonts kit (linked in layout.tsx).
+   futura-pt weights: 300 Light, 400 Book, 500 Medium, 600 Demi, 700 Bold, 800 Heavy.
+   skia-cc-condensed is the Skia width used for the Bio notes in the PDF. */
+@theme {
+  --font-sans: "futura-pt", "Futura PT", Futura, ui-sans-serif, system-ui, sans-serif;
+  --font-hand: "skia-cc-condensed", "Skia", ui-sans-serif, sans-serif;
 }
 
 /* Content column: 1320px wide on desktop like the PDF (300px margins at 1920). */
@@ -60,10 +61,10 @@ body {
   outline-offset: 3px;
 }
 
-/* Hide the native cursor only when the custom one is active (fine pointers). */
-html.has-custom-cursor,
-html.has-custom-cursor * {
-  cursor: none !important;
+/* Tailwind v4 gives buttons the default arrow; clickable buttons should show the hand like links. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
 }
 
 /* Intro loader is skipped for the rest of the session once seen (set before paint). */

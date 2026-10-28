@@ -9,7 +9,7 @@ export default function NotFound() {
         Cut! Wrong scene.
       </h1>
       <p className="max-w-md text-[18px]">This page didn’t make the final edit.</p>
-      <Link href="/" className="mt-2 bg-ink px-8 py-3 text-paper" data-cursor="hover">
+      <Link href="/" className="mt-2 bg-ink px-8 py-3 text-paper">
         Back to home
       </Link>
     </section>

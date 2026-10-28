@@ -16,18 +16,15 @@ export async function ProjectViewerRoute({
   const project = getProject(category, slug);
   if (!cat || !project) notFound();
 
-  const { prev, next, index, total } = getSiblings(project);
-  const tabLabel = cat.tabs?.find((t) => t.id === project.tab)?.label;
+  const { prev, next, total } = getSiblings(project);
 
   return (
     <ProjectViewer
       project={project}
       prev={prev}
       next={next}
-      index={index}
       total={total}
       accent={accentHex[cat.accent]}
-      label={tabLabel ?? cat.title}
       closeHref={categoryHref(cat.slug)}
       mode={mode}
     />

@@ -36,14 +36,14 @@ function Field({
     "aria-invalid": error ? true : undefined,
     "aria-describedby": error ? `${id}-error` : undefined,
     className: cn(
-      "block w-full border bg-transparent px-4 text-[18px] outline-none transition-colors duration-300",
+      "block w-full border bg-transparent px-4 text-[18px] outline-none lg:text-[21px] transition-colors duration-300",
       error ? "border-flame" : "border-ink",
     ),
   };
 
   return (
     <div>
-      <label htmlFor={id} className="mb-2 block text-[18px] lg:text-[20px]">
+      <label htmlFor={id} className="mb-2 block text-[18px] lg:text-[21px]">
         {label} <span className="text-[14px] text-caption lg:text-[15px]">(Required)</span>
       </label>
       <div className="group relative">
@@ -100,10 +100,10 @@ function Form({ onReset }: { onReset: () => void }) {
             ))}
           </div>
           <p className="text-[40px] font-semibold leading-none lg:text-[48px]">Thank you!</p>
-          <p className="mt-4 max-w-[420px] text-[18px] lg:text-[20px]">
+          <p className="mt-4 max-w-[420px] text-[18px] lg:text-[21px]">
             Your message is on its way. I’ll get back to you soon.
           </p>
-          <button type="button" onClick={onReset} className="mt-8 text-[18px] underline underline-offset-4" data-cursor="hover">
+          <button type="button" onClick={onReset} className="mt-8 text-[18px] underline underline-offset-4">
             Send another message
           </button>
         </motion.div>

@@ -16,13 +16,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "i.vimeocdn.com" },
       { protocol: "https", hostname: "i.ytimg.com" },
-      // Placeholder Unsplash covers (see categories in src/content/projects.ts); exact query only.
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "/photo-**",
-        search: "?auto=format&fit=crop&w=2400&q=80",
-      },
     ],
   },
   async redirects() {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { navItems, site } from "@/content/site";
 import { accentHex, categories, categoryHref } from "@/content/projects";
 import { cn, easeOutExpo } from "@/lib/utils";
@@ -34,21 +34,7 @@ function RotatingTagline() {
   );
 }
 
-/** Text that rolls up to a duplicate of itself on hover (the inner stack is two lines tall, so move it by half). */
-function RollText({ children }: { children: string }) {
-  return (
-    <span className="relative block h-[1.25em] overflow-hidden leading-[1.25em]">
-      <span className="block transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:-translate-y-1/2 group-focus-visible:-translate-y-1/2">
-        <span className="block">{children}</span>
-        <span className="block" aria-hidden="true">
-          {children}
-        </span>
-      </span>
-    </span>
-  );
-}
-
-// The Work sub-menu opens on hover (or focus) on every page, in its own panel so it reads over any content.
+// The Work sub-menu opens on hover (or focus) on every page as plain text under the Work tab.
 const menuVariants = {
   show: {
     clipPath: "inset(0 0 0% 0)",
@@ -61,12 +47,37 @@ const menuVariants = {
 };
 
 function WorkMenu({ pathname, open }: { pathname: string; open: boolean }) {
+  const listRef = useRef<HTMLUListElement>(null);
+
+  // With no background behind the menu, an item that sits over a dark area (marked
+  // data-surface="dark", e.g. the home slider) switches to light text so it stays readable.
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!open || !list) return;
+    const measure = () => {
+      list.querySelectorAll<HTMLElement>("a").forEach((link) => {
+        const r = link.getBoundingClientRect();
+        const under = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        const dark = under.some((el) => !list.contains(el) && el.closest('[data-surface="dark"]') !== null);
+        link.toggleAttribute("data-on-dark", dark);
+      });
+    };
+    measure();
+    window.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [open]);
+
   return (
     <AnimatePresence>
       {open ? (
         <motion.ul
+          ref={listRef}
           key="work-menu"
-          className="absolute right-0 top-full z-30 hidden flex-col items-end border border-ink bg-paper py-3 pl-6 pr-5 shadow-[0_24px_48px_-28px_rgba(15,6,6,0.55)] md:flex"
+          className="absolute right-0 top-full z-30 hidden flex-col items-end pt-2 md:flex"
           initial="hidden"
           animate="show"
           exit="hidden"
@@ -86,8 +97,7 @@ function WorkMenu({ pathname, open }: { pathname: string; open: boolean }) {
                 <Link
                   href={href}
                   prefetch
-                  className="group/item relative flex items-center gap-2 whitespace-nowrap py-[2px] text-[17px] leading-[1.45] lg:text-[19px]"
-                  data-cursor="hover"
+                  className="group/item relative flex items-center gap-2 whitespace-nowrap py-[2px] text-[17px] leading-[1.45] transition-colors duration-300 data-on-dark:text-paper lg:text-[21px]"
                 >
                   {isActive ? (
                     <motion.span
@@ -126,7 +136,12 @@ export function SiteHeader() {
   return (
     <header className="container-site relative z-40 pb-6 pt-6 md:pb-10 md:pt-12 lg:pb-[52px] lg:pt-[70px]">
       <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-        <Link href="/" className="group block w-fit" aria-label={`${site.name} — home`} data-cursor="hover">
+        <Link
+          href="/"
+          className="group block w-fit in-[.name-cursor]:cursor-none"
+          aria-label={`${site.name} — home`}
+          data-cursor="name"
+        >
           <span className="block text-[34px] font-semibold leading-[1] tracking-[-0.01em] sm:text-[40px] lg:text-[48px]">
             {site.name.split("").map((ch, i) => (
               <span
@@ -166,10 +181,9 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "group relative flex h-[46px] items-center justify-center text-[16px] transition-colors duration-300 sm:h-[52px] md:w-[140px] lg:w-[162px] lg:text-[20px]",
+                      "relative flex h-[46px] items-center justify-center text-[16px] transition-colors duration-300 sm:h-[52px] md:w-[140px] lg:w-[162px] lg:text-[21px]",
                       isActive ? "text-paper" : "text-ink",
                     )}
-                    data-cursor="hover"
                   >
                     {isActive ? (
                       <motion.span
@@ -179,7 +193,7 @@ export function SiteHeader() {
                       />
                     ) : null}
                     <span className="relative z-10">
-                      <RollText>{item.label}</RollText>
+                      {item.label}
                     </span>
                   </Link>
                   {isWork ? <WorkMenu pathname={pathname} open={workOpen} /> : null}

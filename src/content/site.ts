@@ -1,7 +1,7 @@
 export const site = {
   name: "Dev Patel",
   // The header rotates through these (the PDF uses both lines on different pages).
-  taglines: ["Video Editor and Motion Graphics", "Visual Creator - Toronto, CA Based."],
+  taglines: ["Visual Creator - Toronto, CA Based."],
   description:
     "Dev Patel is a Toronto-based video editor and motion graphics artist crafting short films, music videos, YouTube and social content, motion design and stills.",
   location: "Toronto, CA",

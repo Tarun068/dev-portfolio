@@ -64,7 +64,6 @@ export function SectionTitle({ id, accent, items, active, onSelect }: Props) {
                   "relative transition-colors duration-500",
                   isActive ? "text-[#232020]" : "text-caption hover:text-ink/45",
                 )}
-                data-cursor="hover"
               >
                 {isActive ? <Dot id={id} accent={accent} pop={!switched} /> : null}
                 <SplitText text={item.label} delay={0.1 + i * 0.12} />

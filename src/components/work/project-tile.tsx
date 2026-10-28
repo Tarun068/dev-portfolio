@@ -27,9 +27,6 @@ export function ProjectTile({ project, sizes, className, caption = true, plain =
       prefetch
       aria-label={`${project.title}${project.director ? `, directed by ${project.director}` : ""}`}
       className={cn("group relative block overflow-hidden bg-ink", className)}
-      data-cursor="media"
-      data-cursor-label={project.kind === "image" ? "View" : "Play"}
-      data-cursor-color={accent}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
     >
@@ -54,7 +51,7 @@ export function ProjectTile({ project, sizes, className, caption = true, plain =
 
       {caption ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-3 items-end justify-between gap-3 bg-linear-to-t from-ink/85 to-transparent p-3 text-paper opacity-0 transition duration-500 ease-[var(--ease-out-expo)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100 pointer-coarse:translate-y-0 pointer-coarse:opacity-100 sm:p-4">
-          <span className="text-[15px] font-medium leading-tight sm:text-[19px]">{project.title}</span>
+          <span className="text-[15px] font-semibold leading-tight sm:text-[19px]">{project.title}</span>
           {project.role ? <span className="shrink-0 text-[12px] text-paper/70 sm:text-[14px]">{project.role}</span> : null}
         </span>
       ) : null}

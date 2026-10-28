@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useReducedMotion, useScroll, useTransform, type MotionStyle } from "motion/react";
+import { motion, useReducedMotion, useTransform, type MotionStyle } from "motion/react";
 import { useRef, useState } from "react";
-import { power4, SwapTitle } from "@/components/motion/swap-title";
-import { PlayIcon } from "@/components/ui/arrow-icon";
+import { SwapTitle } from "@/components/motion/swap-title";
 import { ProjectTile } from "@/components/work/project-tile";
 import { projectHref, type Project } from "@/content/projects";
 import { useMediaQuery } from "@/lib/hooks";
 import { usePointerDrift } from "@/lib/pointer-drift";
+import { useReachableScrollProgress } from "@/lib/scroll-progress";
 
 // Card width range as a share of the row: a sliver when the row enters, the PDF's half width once it's in place.
 const CARD_FROM = "11%";
@@ -22,12 +22,13 @@ export function ProjectRow({ project, accent, last }: { project: Project; accent
 
   // Card grows with scroll: from when the row's top is 10% below the fold until it reaches 40% from the top
   // (so the first row, which sits there on load, starts at full size like the PDF). Scrubbed directly;
-  // the easing comes from the site-wide smooth scroll, as on the reference.
-  const { scrollYProgress: grow } = useScroll({ target: ref, offset: [[0, 1.1], [0, 0.4]] });
+  // the easing comes from the site-wide smooth scroll, as on the reference. On tall screens where the
+  // last rows can't scroll that far, it finishes at the bottom of the page instead.
+  const grow = useReachableScrollProgress(ref, { edge: "top", from: 1.1, to: 0.4 });
   const cardWidth = useTransform(grow, [0, 1], [CARD_FROM, CARD_TO]);
 
-  // Divider draws left to right as the bottom of the row scrolls up the screen.
-  const { scrollYProgress: draw } = useScroll({ target: ref, offset: [[1, 1], [1, 0.4]] });
+  // Divider draws left to right as the bottom of the row scrolls up the screen (always completing).
+  const draw = useReachableScrollProgress(ref, { edge: "bottom", from: 1, to: 0.4 });
 
   // Every card leans after the (lazily followed) mouse, in a tight 200px perspective.
   const tilt = useMediaQuery("(pointer: fine) and (min-width: 1024px) and (prefers-reduced-motion: no-preference)");
@@ -70,11 +71,10 @@ export function ProjectRow({ project, accent, last }: { project: Project; accent
               prefetch
               aria-label={label}
               className="block w-fit"
-              data-cursor="media"
-              data-cursor-label="Play"
-              data-cursor-color={accent}
             >
-              <h2 className="overflow-hidden pb-[0.08em] text-[46px] font-semibold leading-[1] tracking-[-0.02em] sm:text-[64px] lg:text-[clamp(72px,5.6vw,108px)]">
+              {/* Side by side, the title scales with the content width (cqw) so titles like "Barkin' Dogs"
+                  fit on one line at every screen size, keeping the spacing around the dividers even. */}
+              <h2 className="overflow-hidden pb-[0.08em] text-[46px] font-semibold leading-[1] tracking-[-0.02em] sm:text-[64px] md:text-[clamp(48px,7.5cqw,100px)]">
                 <span className="sr-only">{project.title}</span>
                 <SwapTitle text={project.title} accent={accent} />
               </h2>
@@ -85,18 +85,7 @@ export function ProjectRow({ project, accent, last }: { project: Project; accent
           </div>
 
           {project.role ? (
-            <p className="relative w-fit text-[17px] lg:text-[21px]">
-              {project.role}
-              <motion.span
-                aria-hidden="true"
-                className="absolute right-0 top-1/2 flex size-10 items-center justify-center rounded-full text-ink"
-                style={{ background: accent, x: "125%", y: "-50%" }}
-                variants={{ rest: { scale: 0 }, hover: { scale: 1 } }}
-                transition={{ duration: 0.6, ease: power4 }}
-              >
-                <PlayIcon className="ml-[3px] w-[28%]" />
-              </motion.span>
-            </p>
+            <p className="text-[17px] lg:text-[21px]">{project.role}</p>
           ) : null}
         </div>
       </motion.div>

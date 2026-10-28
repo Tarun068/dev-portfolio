@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "motion/react";
 import { DrawnArrows, Scribble, type Curve } from "@/components/bio/doodles";
-import { Reveal } from "@/components/motion/reveal";
 import { FillButton } from "@/components/ui/fill-button";
 import { site } from "@/content/site";
 import { useIntroReady } from "@/lib/hooks";
@@ -11,9 +10,9 @@ import { cn } from "@/lib/utils";
 
 // Arrow curves in the stage's 1170×800 coordinate space, traced from PDF page 11.
 const curves: Curve[] = [
-  { from: [690, 43], c1: [630, 8], c2: [470, 18], to: [401, 109], delay: 0.6 },
-  { from: [1100, 546], c1: [1165, 470], c2: [1172, 372], to: [1101, 313], delay: 1.0 },
-  { from: [107, 582], c1: [118, 690], c2: [205, 735], to: [317, 743], delay: 1.4 },
+  { from: [690, 43], c1: [630, 8], c2: [470, 18], to: [401, 109] },
+  { from: [1100, 546], c1: [1165, 470], c2: [1172, 372], to: [1101, 313] },
+  { from: [107, 582], c1: [118, 690], c2: [205, 735], to: [317, 743] },
 ];
 
 function Portrait({ className }: { className?: string }) {
@@ -34,11 +33,13 @@ function Portrait({ className }: { className?: string }) {
   );
 }
 
+/** The one animated piece on the page: drops in, tilts with the pointer and lifts on hover.
+    Flat white frame with no drop shadow, as in the client PDF. */
 function Polaroid({ rx, ry, className }: { rx?: MotionValue<number>; ry?: MotionValue<number>; className?: string }) {
   const ready = useIntroReady();
   return (
     <motion.div
-      className={cn("z-10 bg-white shadow-[0_40px_80px_-40px_rgba(15,6,6,0.45)] [transform-style:preserve-3d]", className)}
+      className={cn("z-10 bg-white [transform-style:preserve-3d]", className)}
       style={{ rotateX: rx, rotateY: ry }}
       initial={{ opacity: 0, y: -80, rotate: -14 }}
       animate={ready ? { opacity: 1, y: 0, rotate: 0 } : undefined}
@@ -50,53 +51,22 @@ function Polaroid({ rx, ry, className }: { rx?: MotionValue<number>; ry?: Motion
   );
 }
 
-function Circle({
-  className,
-  color,
-  delay,
-  float,
-  px,
-  py,
-}: {
-  className: string;
-  color: string;
-  delay: number;
-  float: number;
-  px?: MotionValue<number>;
-  py?: MotionValue<number>;
-}) {
-  const ready = useIntroReady();
-  return (
-    <motion.div className={cn("aspect-square", className)} style={{ x: px, y: py }}>
-      <motion.div
-        className="size-full rounded-full"
-        style={{ background: color }}
-        initial={{ scale: 0 }}
-        animate={ready ? { scale: 1, y: [0, -float, 0] } : undefined}
-        transition={{
-          scale: { type: "spring", stiffness: 220, damping: 11, delay },
-          y: { duration: 4 + float / 4, repeat: Infinity, ease: "easeInOut", delay: delay + 0.6 },
-        }}
-      />
-    </motion.div>
-  );
+function Circle({ className, color }: { className: string; color: string }) {
+  return <div aria-hidden="true" className={cn("aspect-square rounded-full", className)} style={{ background: color }} />;
 }
 
+// Skia Condensed at 38pt in the PDF (3.4% of the 1170-unit stage).
 const hand = "font-hand leading-[0.95] text-ink";
 
 /** Bio page (PDF page 11): polaroid, scribbled notes, drawn arrows and Download CV. */
 export function BioComposition() {
-  // Pointer position over the stage, -0.5..0.5, for subtle 3D tilt and parallax.
+  // Pointer position over the stage, -0.5..0.5, for the polaroid's 3D tilt.
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const sx = useSpring(mx, { stiffness: 90, damping: 18 });
   const sy = useSpring(my, { stiffness: 90, damping: 18 });
   const rotateY = useTransform(sx, [-0.5, 0.5], [-9, 9]);
   const rotateX = useTransform(sy, [-0.5, 0.5], [7, -7]);
-  const farX = useTransform(sx, [-0.5, 0.5], [34, -34]);
-  const farY = useTransform(sy, [-0.5, 0.5], [24, -24]);
-  const nearX = useTransform(sx, [-0.5, 0.5], [-18, 18]);
-  const nearY = useTransform(sy, [-0.5, 0.5], [-12, 12]);
 
   function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
     if (e.pointerType !== "mouse") return;
@@ -118,35 +88,31 @@ export function BioComposition() {
       >
         <DrawnArrows curves={curves} viewBox="0 0 1170 800" className="absolute inset-0 size-full text-ink" />
 
-        <Circle className="absolute left-[85%] top-[5.4%] w-[7.86%]" color="var(--color-sun)" delay={0.7} float={10} px={farX} py={farY} />
-        <Circle className="absolute left-[47.5%] top-[68.1%] w-[7.86%]" color="var(--color-flame)" delay={0.9} float={7} px={farX} py={farY} />
+        <Circle className="absolute left-[85%] top-[5.4%] w-[7.86%]" color="var(--color-sun)" />
+        <Circle className="absolute left-[47.5%] top-[68.1%] w-[7.86%]" color="var(--color-flame)" />
 
         <Polaroid rx={rotateX} ry={rotateY} className="absolute left-[51.45%] top-[12.5%] h-[61.25%] w-[36.9%]" />
 
-        <motion.div className="absolute left-[28.9%] top-[21.25%] z-20 h-[11.25%] w-[17.1%]" style={{ x: nearX, y: nearY }}>
-          <Scribble className="size-full" seed={1} delay={0.3} width={200} height={90}>
-            <span className={cn(hand, "text-[3.7cqw]")}>Hello!</span>
+        <div className="absolute left-[28.9%] top-[21.25%] z-20 h-[11.25%] w-[17.1%]">
+          <Scribble className="size-full" seed={1} width={200} height={90}>
+            <span className={cn(hand, "text-[3.4cqw]")}>Hello!</span>
           </Scribble>
-        </motion.div>
-
-        <div className="absolute -left-[4%] top-[36.25%] w-[44.6%] text-right text-[clamp(15px,2cqw,24px)] leading-[1.25]">
-          <Reveal delay={0.4}>
-            <p>{site.bio[0]}</p>
-          </Reveal>
-          <Reveal delay={0.55}>
-            <p className="mt-[1.25em]">{site.bio[1]}</p>
-          </Reveal>
         </div>
 
-        <motion.div className="absolute left-[67.9%] top-[66.9%] z-20 h-[16.25%] w-[22.2%]" style={{ x: nearX, y: nearY }}>
-          <Scribble className="size-full" seed={2.4} delay={1.2} width={260} height={130}>
-            <span className={cn(hand, "block text-center text-[3.3cqw]")}>
+        <div className="absolute -left-[4%] top-[36.25%] w-[44.6%] text-right text-[clamp(15px,2cqw,24px)] font-semibold leading-[1.25]">
+          <p>{site.bio[0]}</p>
+          <p className="mt-[1.25em]">{site.bio[1]}</p>
+        </div>
+
+        <div className="absolute left-[67.9%] top-[66.9%] z-20 h-[16.25%] w-[22.2%]">
+          <Scribble className="size-full" seed={2.4} width={260} height={130}>
+            <span className={cn(hand, "block text-center text-[3.4cqw]")}>
               Every frame
               <br />
               has a story.
             </span>
           </Scribble>
-        </motion.div>
+        </div>
 
         <div className="absolute left-[48.7%] top-[90.9%] -translate-x-1/2">
           <FillButton href={site.cvPath} download className="min-w-[234px]">
@@ -158,11 +124,11 @@ export function BioComposition() {
       {/* Mobile / tablet: same pieces, stacked. */}
       <div className="container-site flex flex-col items-center pb-16 pt-2 lg:hidden">
         <div className="relative w-[78%] max-w-[380px]">
-          <Circle className="absolute -right-[10%] -top-[8%] w-[22%]" color="var(--color-sun)" delay={0.6} float={8} />
-          <Circle className="absolute -bottom-[7%] -left-[10%] w-[22%]" color="var(--color-flame)" delay={0.8} float={6} />
+          <Circle className="absolute -right-[10%] -top-[8%] w-[22%]" color="var(--color-sun)" />
+          <Circle className="absolute -bottom-[7%] -left-[10%] w-[22%]" color="var(--color-flame)" />
           <Polaroid className="relative aspect-[432/490] w-full" />
           <div className="absolute -bottom-[12%] -right-[14%] z-20 h-[24%] w-[62%]">
-            <Scribble className="size-full" seed={2.4} delay={0.9} width={260} height={130}>
+            <Scribble className="size-full" seed={2.4} width={260} height={130}>
               <span className={cn(hand, "block text-center text-[clamp(22px,6vw,32px)]")}>
                 Every frame
                 <br />
@@ -173,21 +139,19 @@ export function BioComposition() {
         </div>
 
         <div className="mt-20 h-[72px] w-[180px]">
-          <Scribble className="size-full" seed={1} delay={0.2} width={200} height={90}>
+          <Scribble className="size-full" seed={1} width={200} height={90}>
             <span className={cn(hand, "text-[36px]")}>Hello!</span>
           </Scribble>
         </div>
 
-        <Reveal className="mt-6 max-w-[560px] text-center text-[18px] leading-[1.35] sm:text-[20px]">
+        <div className="mt-6 max-w-[560px] text-center text-[18px] font-semibold leading-[1.35] sm:text-[20px]">
           <p>{site.bio[0]}</p>
           <p className="mt-5">{site.bio[1]}</p>
-        </Reveal>
+        </div>
 
-        <Reveal className="mt-10" delay={0.2}>
-          <FillButton href={site.cvPath} download className="min-w-[220px]">
-            Download CV
-          </FillButton>
-        </Reveal>
+        <FillButton href={site.cvPath} download className="mt-10 min-w-[220px]">
+          Download CV
+        </FillButton>
       </div>
     </>
   );

@@ -21,11 +21,3 @@ export function CloseIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-
-export function PlayIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 28" aria-hidden="true" className={className}>
-      <path d="M0 0l24 14L0 28z" fill="currentColor" />
-    </svg>
-  );
-}
