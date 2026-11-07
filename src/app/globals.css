@@ -36,6 +36,29 @@
 
 :root {
   color-scheme: light;
+  /* --page-edge: space above the header, reused at the bottom of every page so pages are framed evenly.
+     --header-gap: space under the header, reused above the home Download CV row. */
+  --page-edge: 1.5rem;
+  --header-gap: 1.5rem;
+
+  @media (min-width: 48rem) {
+    --page-edge: 3rem;
+    --header-gap: 2.5rem;
+  }
+  @media (min-width: 64rem) {
+    --page-edge: 70px;
+    --header-gap: 52px;
+  }
+}
+
+@utility page-pb {
+  padding-bottom: var(--page-edge);
+}
+
+/* Top padding for vertically centred pages (Bio, Contact): together with the header's own bottom
+   padding it matches page-pb, so the content sits centred between the header and the screen bottom. */
+@utility page-pt {
+  padding-top: calc(var(--page-edge) - var(--header-gap));
 }
 
 html {

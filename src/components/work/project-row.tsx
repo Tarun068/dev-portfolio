@@ -40,7 +40,7 @@ export function ProjectRow({ project, accent, last }: { project: Project; accent
   const label = `${project.title}${project.director ? `, directed by ${project.director}` : ""}`;
 
   return (
-    <li ref={ref} className="relative py-10 first:pt-0 lg:py-12">
+    <li ref={ref} className="relative py-10 first:pt-0 last:pb-0 lg:py-12">
       <motion.div
         className="flex flex-col gap-5 md:min-h-[28.125cqw] md:flex-row md:gap-0"
         initial="rest"

@@ -197,18 +197,6 @@ export function getFeatured() {
   return projects.filter((p) => p.featured);
 }
 
-/** Previous/next project within the same category (and tab), wrapping around. */
-export function getSiblings(project: Project) {
-  const list = getProjects(project.category, project.tab);
-  const i = list.findIndex((p) => p.slug === project.slug);
-  return {
-    prev: list[(i - 1 + list.length) % list.length],
-    next: list[(i + 1) % list.length],
-    index: i,
-    total: list.length,
-  };
-}
-
 export function projectHref(p: Pick<Project, "category" | "slug">) {
   return `/work/${p.category}/${p.slug}`;
 }

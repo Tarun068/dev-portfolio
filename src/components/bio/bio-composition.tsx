@@ -77,44 +77,50 @@ export function BioComposition() {
 
   return (
     <>
-      {/* Desktop: the PDF composition, scaled as one piece via container query units. */}
+      {/* Desktop: the PDF composition, scaled as one piece via container query units. The stage ends at
+          the bottom of the Download CV button (782 of the PDF's 800 units), so the page's bottom space is
+          measured from the button; it shrinks on short screens so the whole piece fits under the header. */}
       <div
-        className="relative mx-auto mt-2 hidden aspect-[1170/800] w-full max-w-[min(1170px,max(760px,calc((100svh-230px)*1.4625)))] [container-type:inline-size] [perspective:1400px] lg:block"
+        className="relative mx-auto hidden aspect-[1170/782] w-full max-w-[min(1170px,max(760px,calc((100svh-290px)*1.4962)))] [container-type:inline-size] lg:block"
         onPointerMove={onPointerMove}
         onPointerLeave={() => {
           mx.set(0);
           my.set(0);
         }}
       >
-        <DrawnArrows curves={curves} viewBox="0 0 1170 800" className="absolute inset-0 size-full text-ink" />
+        <DrawnArrows curves={curves} viewBox="0 0 1170 782" className="absolute inset-0 size-full text-ink" />
 
-        <Circle className="absolute left-[85%] top-[5.4%] w-[7.86%]" color="var(--color-sun)" />
-        <Circle className="absolute left-[47.5%] top-[68.1%] w-[7.86%]" color="var(--color-flame)" />
+        {/* Pieces keep their positions as percentages of the PDF's full 1170×800 frame. */}
+        <div className="absolute inset-x-0 top-0 aspect-[1170/800] [perspective:1400px]">
+          <Circle className="absolute left-[85%] top-[5.4%] w-[7.86%]" color="var(--color-sun)" />
+          <Circle className="absolute left-[47.5%] top-[68.1%] w-[7.86%]" color="var(--color-flame)" />
 
-        <Polaroid rx={rotateX} ry={rotateY} className="absolute left-[51.45%] top-[12.5%] h-[61.25%] w-[36.9%]" />
+          <Polaroid rx={rotateX} ry={rotateY} className="absolute left-[51.45%] top-[12.5%] h-[61.25%] w-[36.9%]" />
 
-        <div className="absolute left-[28.9%] top-[21.25%] z-20 h-[11.25%] w-[17.1%]">
-          <Scribble className="size-full" seed={1} width={200} height={90}>
-            <span className={cn(hand, "text-[3.4cqw]")}>Hello!</span>
-          </Scribble>
+          <div className="absolute left-[28.9%] top-[21.25%] z-20 h-[11.25%] w-[17.1%]">
+            <Scribble className="size-full" seed={1} width={200} height={90}>
+              <span className={cn(hand, "text-[3.4cqw]")}>Hello!</span>
+            </Scribble>
+          </div>
+
+          {/* Bio copy in Futura PT Book (client update; the PDF had Demi). */}
+          <div className="absolute -left-[4%] top-[36.25%] w-[44.6%] text-right text-[clamp(15px,2cqw,24px)] leading-[1.25]">
+            <p>{site.bio[0]}</p>
+            <p className="mt-[1.25em]">{site.bio[1]}</p>
+          </div>
+
+          <div className="absolute left-[67.9%] top-[66.9%] z-20 h-[16.25%] w-[22.2%]">
+            <Scribble className="size-full" seed={2.4} width={260} height={130}>
+              <span className={cn(hand, "block text-center text-[3.4cqw]")}>
+                Every frame
+                <br />
+                has a story.
+              </span>
+            </Scribble>
+          </div>
         </div>
 
-        <div className="absolute -left-[4%] top-[36.25%] w-[44.6%] text-right text-[clamp(15px,2cqw,24px)] font-semibold leading-[1.25]">
-          <p>{site.bio[0]}</p>
-          <p className="mt-[1.25em]">{site.bio[1]}</p>
-        </div>
-
-        <div className="absolute left-[67.9%] top-[66.9%] z-20 h-[16.25%] w-[22.2%]">
-          <Scribble className="size-full" seed={2.4} width={260} height={130}>
-            <span className={cn(hand, "block text-center text-[3.4cqw]")}>
-              Every frame
-              <br />
-              has a story.
-            </span>
-          </Scribble>
-        </div>
-
-        <div className="absolute left-[48.7%] top-[90.9%] -translate-x-1/2">
+        <div className="absolute bottom-0 left-[48.7%] -translate-x-1/2">
           <FillButton href={site.cvPath} download className="min-w-[234px]">
             Download CV
           </FillButton>
@@ -122,7 +128,7 @@ export function BioComposition() {
       </div>
 
       {/* Mobile / tablet: same pieces, stacked. */}
-      <div className="container-site flex flex-col items-center pb-16 pt-2 lg:hidden">
+      <div className="container-site flex flex-col items-center pt-2 lg:hidden">
         <div className="relative w-[78%] max-w-[380px]">
           <Circle className="absolute -right-[10%] -top-[8%] w-[22%]" color="var(--color-sun)" />
           <Circle className="absolute -bottom-[7%] -left-[10%] w-[22%]" color="var(--color-flame)" />
@@ -144,7 +150,7 @@ export function BioComposition() {
           </Scribble>
         </div>
 
-        <div className="mt-6 max-w-[560px] text-center text-[18px] font-semibold leading-[1.35] sm:text-[20px]">
+        <div className="mt-6 max-w-[560px] text-center text-[18px] leading-[1.35] sm:text-[20px]">
           <p>{site.bio[0]}</p>
           <p className="mt-5">{site.bio[1]}</p>
         </div>

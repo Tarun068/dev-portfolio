@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function BioPage() {
   return (
-    <section className="flex flex-1 flex-col pb-10 lg:pb-16">
+    <section className="page-pt page-pb flex flex-1 flex-col justify-center">
       <h1 className="sr-only">About {site.name}</h1>
       <BioComposition />
     </section>

@@ -21,7 +21,7 @@ npm run build && npm start
 | `/` | 1 | Full-bleed showreel slider (featured projects), arrows, Download CV |
 | `/work/films`, `/work/music-videos` | 2, 8 | Big rows: thumbnail + oversized title, "directed by", role |
 | `/work/youtube-socials`, `/work/motion-stills` | 4–5, 9–10 | Heading words toggle between a 16:9 grid and a masonry grid |
-| `/work/[category]/[slug]` | 3, 6, 7 | Dark project viewer. Opens as a modal over the grid (intercepted route) and as a full page on direct visits |
+| `/work/[category]/[slug]` | 3, 6, 7 | Dark project viewer. Opens as a modal over the grid (intercepted route) and as a full page on direct visits. A black curtain drops in on open and lifts on close (timings from the O Positive reference). Youtube/Socials and Motion/Stills get prev/next arrows, which swap the project in place and update the URL |
 | `/bio` | 11 | Polaroid composition with hand-drawn notes and arrows |
 | `/contact` | 12 | Contact form (server action) |
 
@@ -33,12 +33,13 @@ npm run build && npm start
 - **Site text, bio, taglines, portrait:** `src/content/site.ts`.
 - **CV:** replace `public/cv/dev-patel-cv.pdf` (currently a placeholder).
 - **Colours:** brand tokens in `src/app/globals.css` (`paper`, `ink`, `caption`, `sun`, `flame`, `sky`, `leaf`).
+- **Page spacing:** `--page-edge` (space above the header, reused at the bottom of every page via `page-pb`) and `--header-gap` (space under the header) in `src/app/globals.css`.
 
 ## Fonts
 
 Fonts come from the client's **Adobe Fonts web project** (`https://use.typekit.net/xks4ram.css`, linked in `src/app/layout.tsx`), which is the licensed way to use them on the web:
 
-- **Futura PT** (`futura-pt`): Book 400 for navigation, forms, sub headings and captions (21px on desktop); Demi 600 for titles (48px), the name and the bio (24px); Bold 700 for the Contact heading. Light, Medium and Heavy are also in the kit.
+- **Futura PT** (`futura-pt`): Book 400 for navigation, forms, sub headings, captions (21px on desktop) and the Bio text (24px); Demi 600 for titles (48px) and the name; Bold 700 for the Contact heading. Light, Medium and Heavy are also in the kit.
 - **Skia Condensed** (`skia-cc-condensed`): the handwritten-style notes on the Bio page ("Hello!", "Every frame has a story.").
 
 The font families are set in `src/app/globals.css` (`--font-sans`, `--font-hand`). Adobe Fonts kits can't be self-hosted; the kit is managed in the client's Adobe account.

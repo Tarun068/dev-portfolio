@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Cursor } from "@/components/cursor";
 import { IntroLoader, introSkipScript } from "@/components/intro-loader";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
@@ -69,7 +68,6 @@ export default function RootLayout({ children, modal }: LayoutProps<"/">) {
           </main>
           {modal}
           <IntroLoader />
-          <Cursor />
         </Providers>
       </body>
     </html>

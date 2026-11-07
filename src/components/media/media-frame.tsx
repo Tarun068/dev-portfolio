@@ -14,8 +14,6 @@ function Placeholder({ project }: { project: Project }) {
   const second = tones[h % tones.length];
   const x = 15 + (h % 70);
   const y = 15 + ((h >>> 8) % 70);
-  const seconds = String((h >>> 4) % 60).padStart(2, "0");
-  const frames = String((h >>> 12) % 24).padStart(2, "0");
 
   return (
     <div className="grain absolute inset-0 overflow-hidden bg-ink">
@@ -26,9 +24,6 @@ function Placeholder({ project }: { project: Project }) {
           background: `radial-gradient(70% 60% at ${x}% ${y}%, ${accent}66 0%, transparent 70%), radial-gradient(60% 55% at ${100 - x}% ${100 - y}%, ${second}3d 0%, transparent 70%)`,
         }}
       />
-      <span className="absolute right-3 top-2.5 font-mono text-[10px] tracking-[0.2em] text-white/35">
-        00:00:{seconds}:{frames}
-      </span>
     </div>
   );
 }

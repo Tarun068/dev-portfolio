@@ -4,7 +4,6 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { MediaFrame } from "@/components/media/media-frame";
-import { Magnetic } from "@/components/motion/magnetic";
 import { ArrowIcon } from "@/components/ui/arrow-icon";
 import { FillButton } from "@/components/ui/fill-button";
 import { accentHex, getCategory, projectHref, type Project } from "@/content/projects";
@@ -37,7 +36,7 @@ export function HeroCarousel({ slides }: { slides: Project[] }) {
     <section aria-roledescription="carousel" aria-label="Featured work" className="flex flex-1 flex-col">
       <div
         data-surface="dark"
-        className="relative min-h-[max(56svh,280px)] w-full flex-1 touch-pan-y overflow-hidden bg-ink md:min-h-[max(65svh,420px)]"
+        className="relative min-h-[max(56svh,280px)] w-full flex-1 touch-pan-y overflow-hidden bg-ink md:min-h-[max(60svh,420px)]"
         onPointerEnter={(e) => e.pointerType === "mouse" && setPaused(true)}
         onPointerLeave={() => setPaused(false)}
       >
@@ -102,37 +101,23 @@ export function HeroCarousel({ slides }: { slides: Project[] }) {
         ) : null}
       </div>
 
-      {/* Small gap above the button; below it the same space as the header's top padding, so the page
-          is framed evenly top and bottom. The slider keeps at least 65% of the screen (56% on phones)
-          and grows into any extra height. */}
-      <div className="container-site flex items-center justify-between gap-4 pb-6 pt-6 md:pb-12 lg:pb-[70px]">
-        <Magnetic>
-          <button
-            type="button"
-            onClick={() => go(-1)}
-            aria-label="Previous project"
-            className="group -m-3 p-3"
-          >
-            <ArrowIcon direction="left" className="transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:-translate-x-2" />
-          </button>
-        </Magnetic>
+      {/* Above the button: the same visible gap as between the header text and the slider (the header's
+          bottom padding plus the space under the tagline's baseline). Below it: the same space
+          as the header's top padding, so the page is framed evenly top and bottom. The slider fills the
+          rest of the screen, keeping at least 60% of it (56% on phones) so the page still fits in one
+          screen on 1080p displays. */}
+      <div className="container-site page-pb flex items-center justify-between gap-4 pt-[calc(var(--header-gap)+6px)]">
+        <button type="button" onClick={() => go(-1)} aria-label="Previous project" className="-m-3 p-3">
+          <ArrowIcon direction="left" />
+        </button>
 
-        <Magnetic strength={0.2}>
-          <FillButton href={site.cvPath} download className="min-w-[200px] md:min-w-[234px]">
-            Download CV
-          </FillButton>
-        </Magnetic>
+        <FillButton href={site.cvPath} download className="min-w-[200px] md:min-w-[234px]">
+          Download CV
+        </FillButton>
 
-        <Magnetic>
-          <button
-            type="button"
-            onClick={() => go(1)}
-            aria-label="Next project"
-            className="group -m-3 p-3"
-          >
-            <ArrowIcon className="transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:translate-x-2" />
-          </button>
-        </Magnetic>
+        <button type="button" onClick={() => go(1)} aria-label="Next project" className="-m-3 p-3">
+          <ArrowIcon />
+        </button>
       </div>
 
       <p className="sr-only" aria-live="polite">

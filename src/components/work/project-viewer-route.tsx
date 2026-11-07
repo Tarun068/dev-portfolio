@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjectViewer } from "@/components/work/project-viewer";
-import { accentHex, categoryHref, getCategory, getProject, getSiblings, projectHref } from "@/content/projects";
+import { accentHex, categoryHref, getCategory, getProject, getProjects, projectHref } from "@/content/projects";
 
 /** Shared by the standalone project page and the intercepted modal route. */
 export async function ProjectViewerRoute({
@@ -16,15 +16,13 @@ export async function ProjectViewerRoute({
   const project = getProject(category, slug);
   if (!cat || !project) notFound();
 
-  const { prev, next, total } = getSiblings(project);
-
   return (
     <ProjectViewer
       project={project}
-      prev={prev}
-      next={next}
-      total={total}
+      siblings={getProjects(cat.slug, project.tab)}
+      stepper={cat.layout === "tabs"}
       accent={accentHex[cat.accent]}
+      categoryTitle={cat.title}
       closeHref={categoryHref(cat.slug)}
       mode={mode}
     />

@@ -47,7 +47,7 @@ export default function WorkCategoryPage({ params }: PageProps<"/work/[category]
   // URL data stays inside Suspense so the shared App Shell remains instant; links into
   // this route use prefetch so the content is usually ready before the click.
   return (
-    <section className="pb-24 md:pb-32">
+    <section className="page-pb">
       <Suspense fallback={<div className="min-h-[70svh]" />}>
         <CategoryContent params={params} />
       </Suspense>

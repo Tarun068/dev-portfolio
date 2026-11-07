@@ -134,14 +134,9 @@ export function SiteHeader() {
   const workOpen = openAt === pathname;
 
   return (
-    <header className="container-site relative z-40 pb-6 pt-6 md:pb-10 md:pt-12 lg:pb-[52px] lg:pt-[70px]">
+    <header className="container-site relative z-40 pb-(--header-gap) pt-(--page-edge)">
       <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-        <Link
-          href="/"
-          className="group block w-fit in-[.name-cursor]:cursor-none"
-          aria-label={`${site.name} — home`}
-          data-cursor="name"
-        >
+        <Link href="/" className="group block w-fit" aria-label={`${site.name} — home`}>
           <span className="block text-[34px] font-semibold leading-[1] tracking-[-0.01em] sm:text-[40px] lg:text-[48px]">
             {site.name.split("").map((ch, i) => (
               <span

@@ -10,7 +10,9 @@ const STAGGER = 0.028;
 export function ContactHeading() {
   const ready = useIntroReady();
   return (
-    <h1 className="relative isolate text-[40px] font-bold leading-[1.15] tracking-[-0.01em] sm:text-[52px] md:text-right lg:text-[clamp(52px,4.2vw,60px)]">
+    // Beside the form it sizes to its column (container units) so it always stays on the PDF's two
+    // lines, reaching the PDF's 60px when the page is at full width.
+    <h1 className="relative isolate text-[40px] font-bold leading-[1.15] tracking-[-0.01em] sm:text-[52px] xl:whitespace-nowrap xl:text-right xl:text-[min(60px,11cqw)]">
       {/* The dot is pinned to the first word so it stays behind the "N" however the line wraps,
           the same way as the dot on the other page titles. */}
       <span className="relative inline-block">
