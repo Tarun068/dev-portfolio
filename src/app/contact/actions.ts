@@ -1,5 +1,8 @@
 "use server";
 
+import nodemailer, { type Transporter } from "nodemailer";
+import { contactEmail } from "@/lib/contact-email";
+
 export type ContactField = "name" | "email" | "message";
 
 export type ContactState = {
@@ -11,10 +14,30 @@ export type ContactState = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+let mailer: Transporter | null = null;
+
+/** One SMTP connection setup per server, reused for every message. Defaults to Gmail. */
+function getMailer(user: string, pass: string) {
+  if (!mailer) {
+    const port = Number(process.env.SMTP_PORT || 465);
+    mailer = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      port,
+      secure: port === 465, // 465 = TLS from the start; 587 upgrades with STARTTLS
+      auth: { user, pass },
+      // Fail fast so the visitor isn't left waiting if the mail server can't be reached.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
+    });
+  }
+  return mailer;
+}
+
 /**
- * Sends the contact form through Resend's HTTP API when RESEND_API_KEY and
- * CONTACT_TO_EMAIL are set (see .env.example). In development without them,
- * the message is logged so the form can still be exercised.
+ * Emails the contact form to Dev through Gmail's SMTP server when SMTP_USER and SMTP_PASS
+ * (a Google App Password) are set (see .env.example). In development without them, the
+ * message is logged so the form can still be exercised.
  */
 export async function sendMessage(_prev: ContactState, formData: FormData): Promise<ContactState> {
   const values = {
@@ -34,10 +57,12 @@ export async function sendMessage(_prev: ContactState, formData: FormData): Prom
   else if (values.message.length > 5000) errors.message = "Please keep it under 5000 characters.";
   if (Object.keys(errors).length > 0) return { status: "error", errors, values };
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.CONTACT_TO_EMAIL;
+  const user = process.env.SMTP_USER?.trim();
+  // Google shows App Passwords in groups of four ("abcd efgh ijkl mnop"); the spaces aren't part of it.
+  const pass = process.env.SMTP_PASS?.replace(/\s+/g, "");
+  const to = process.env.CONTACT_TO_EMAIL?.trim() || user;
 
-  if (!apiKey || !to) {
+  if (!user || !pass || !to) {
     if (process.env.NODE_ENV !== "production") {
       console.info("[contact] Email delivery is not configured. Message received:", values);
       return { status: "success" };
@@ -45,20 +70,10 @@ export async function sendMessage(_prev: ContactState, formData: FormData): Prom
     return { status: "error", message: "The contact form isn’t connected yet. Please try again later.", values };
   }
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: process.env.CONTACT_FROM_EMAIL ?? "Portfolio <onboarding@resend.dev>",
-      to: [to],
-      reply_to: values.email,
-      subject: `New message from ${values.name}`,
-      text: `Name: ${values.name}\nEmail: ${values.email}\n\n${values.message}`,
-    }),
-  });
-
-  if (!res.ok) {
-    console.error("[contact] Resend error", res.status, await res.text().catch(() => ""));
+  try {
+    await getMailer(user, pass).sendMail(contactEmail(values, user, to));
+  } catch (error) {
+    console.error("[contact] Could not send the message:", error);
     return { status: "error", message: "Something went wrong sending your message. Please try again.", values };
   }
 

@@ -49,7 +49,13 @@ The social share image (`src/app/opengraph-image.tsx`) is generated on the serve
 
 ## Contact form
 
-Copy `.env.example` to `.env.local` and set `RESEND_API_KEY`, `CONTACT_TO_EMAIL` and `CONTACT_FROM_EMAIL`. Without them, messages are logged to the server console in development, and the form shows a "not connected yet" error in production.
+Messages are emailed through **Gmail's SMTP server** (Nodemailer, in `src/app/contact/actions.ts`); nothing is stored. Each one arrives as "New message from (name)", with Reply-To set to the visitor so pressing Reply answers them.
+
+1. On the sending Google account, turn on 2-Step Verification, then create an **App Password** (Google Account → Security → 2-Step Verification → App passwords). The normal Gmail password won't work.
+2. Copy `.env.example` to `.env.local` (and add the same variables on the host): `SMTP_USER` = the Gmail address, `SMTP_PASS` = the App Password, `CONTACT_TO_EMAIL` = the inbox that receives messages (defaults to `SMTP_USER`).
+3. Restart the server and send a test message.
+
+Without these, messages are logged to the server console in development, and the form shows a "not connected yet" error in production. `.env.local` is git-ignored; never commit the App Password. A regular Gmail account can send about 500 emails a day.
 
 ## Deploying to Hostinger
 
