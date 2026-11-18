@@ -42,7 +42,10 @@ export function SectionTitle({ id, accent, items, active, onSelect }: Props) {
   const [switched, setSwitched] = useState(false);
 
   return (
-    <h1 className="relative isolate flex flex-wrap items-baseline justify-center text-center text-[34px] font-semibold leading-[1.1] tracking-[-0.01em] sm:text-[42px] lg:text-[48px]">
+    // Spaced by what you see, not the text box: the page gap runs from the nav to the top of the dot
+    // (0.14em above the box) and from the baseline (0.217em above the box bottom at this line height,
+    // measured in the browser) to the content.
+    <h1 className="relative isolate mb-[calc(var(--page-edge)-0.217em)] mt-[0.14em] flex flex-wrap items-baseline justify-center text-center text-[34px] font-semibold leading-[1.1] tracking-[-0.01em] sm:text-[42px] lg:text-[48px]">
       {items.map((item, i) => {
         const isActive = item.id === active;
         return (

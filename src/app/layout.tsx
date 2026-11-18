@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     template: `%s — ${site.name}`,
   },
   description: site.description,
+  // One .ico with a pixel-fitted frame per tab size (16px at 100% scaling, 20px at 125%, 24px at
+  // 150%, 32px at 200% …), so browsers pick an exact frame instead of scaling one and blurring it.
+  icons: {
+    icon: [{ url: "/favicon.ico", sizes: "16x16 20x20 24x24 32x32 40x40 48x48 64x64", type: "image/x-icon" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   keywords: ["video editor", "motion graphics", "Toronto", "film editor", "music videos", "colour grading", site.name],
   authors: [{ name: site.name }],
   creator: site.name,

@@ -77,21 +77,23 @@ export function BioComposition() {
 
   return (
     <>
-      {/* Desktop: the PDF composition, scaled as one piece via container query units. The stage ends at
-          the bottom of the Download CV button (782 of the PDF's 800 units), so the page's bottom space is
-          measured from the button; it shrinks on short screens so the whole piece fits under the header. */}
+      {/* Desktop: the PDF composition, scaled as one piece via container query units. The stage is cropped
+          to what is drawn, from the top of the highest arrow (23.5 of the PDF's 800 units, stroke included)
+          to the bottom of the Download CV button (782), so the page centres the visible artwork with equal
+          gaps above and below. It shrinks on short screens so the whole piece fits under the header. */}
       <div
-        className="relative mx-auto hidden aspect-[1170/782] w-full max-w-[min(1170px,max(760px,calc((100svh-290px)*1.4962)))] [container-type:inline-size] lg:block"
+        className="relative mx-auto hidden aspect-[1170/758.5] w-full max-w-[min(1170px,max(760px,calc((100svh-270px)*1.5425)))] [container-type:inline-size] lg:block"
         onPointerMove={onPointerMove}
         onPointerLeave={() => {
           mx.set(0);
           my.set(0);
         }}
       >
-        <DrawnArrows curves={curves} viewBox="0 0 1170 782" className="absolute inset-0 size-full text-ink" />
+        <DrawnArrows curves={curves} viewBox="0 23.5 1170 758.5" className="absolute inset-0 size-full text-ink" />
 
-        {/* Pieces keep their positions as percentages of the PDF's full 1170×800 frame. */}
-        <div className="absolute inset-x-0 top-0 aspect-[1170/800] [perspective:1400px]">
+        {/* Pieces keep their positions as percentages of the PDF's full 1170×800 frame, shifted up by the
+            cropped 23.5 units (3.098% of the stage height). */}
+        <div className="absolute inset-x-0 top-[-3.098%] aspect-[1170/800] [perspective:1400px]">
           <Circle className="absolute left-[85%] top-[5.4%] w-[7.86%]" color="var(--color-sun)" />
           <Circle className="absolute left-[47.5%] top-[68.1%] w-[7.86%]" color="var(--color-flame)" />
 

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
  */
 export default function ContactPage() {
   return (
-    <section className="container-site page-pt page-pb grid flex-1 content-center items-center gap-12 md:gap-16 xl:grid-cols-[minmax(0,1fr)_650px] xl:gap-x-[116px]">
+    <section className="container-site page-pb grid flex-1 content-center items-center gap-12 md:gap-16 xl:grid-cols-[minmax(0,1fr)_650px] xl:gap-x-[116px]">
       <div className="mx-auto w-full max-w-[650px] [container-type:inline-size] xl:max-w-none">
         <ContactHeading />
       </div>

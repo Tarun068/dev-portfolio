@@ -31,9 +31,10 @@ npm run build && npm start
 
 - **Projects:** `src/content/projects.ts`. Each project takes a `poster` (image in `/public`), a `vimeoId` / `youtubeId` / `videoSrc` for playback, an optional muted `previewSrc` loop (plays on hover and in the home hero), and `featured: true` to appear on the home slider. Without a poster, a placeholder frame is shown.
 - **Site text, bio, taglines, portrait:** `src/content/site.ts`.
+- **Logo:** the client's DP monogram as SVG path data in `src/components/brand/logo-paths.ts` (traced from their PNG). It plays on the intro screen (`src/components/intro-loader.tsx`), once per browser session, sized so its edges land on whole screen pixels. It is also the site icon: `public/favicon.ico` holds a pixel-fitted frame for each tab size (16, 20, 24, 32, 40, 48, 64px — i.e. 100% to 300% display scaling) and `public/apple-touch-icon.png` (180px) is the iPhone home-screen icon; both are declared in `metadata.icons` in `src/app/layout.tsx`. Each frame is drawn at its own size rather than scaled from one image, which is what keeps it sharp.
 - **CV:** replace `public/cv/dev-patel-cv.pdf` (currently a placeholder).
 - **Colours:** brand tokens in `src/app/globals.css` (`paper`, `ink`, `caption`, `sun`, `flame`, `sky`, `leaf`).
-- **Page spacing:** `--page-edge` (space above the header, reused at the bottom of every page via `page-pb`) and `--header-gap` (space under the header) in `src/app/globals.css`.
+- **Page spacing:** one vertical gap, `--page-edge` in `src/app/globals.css` (70px desktop, 48px tablet, 24px phone), as in the client PDF: top of the page to the nav, the nav to the first content, between the main blocks (e.g. slider to Download CV, a title to its content, the viewer's Close / media / title) and the last content to the bottom. It is measured between visible edges: the nav box (not the tagline), media and buttons, a title's dot and baseline. Bio and Contact centre their visible content between the nav and the bottom.
 
 ## Fonts
 

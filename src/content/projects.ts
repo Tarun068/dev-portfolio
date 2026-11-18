@@ -40,6 +40,7 @@ export type Project = {
   videoSrc?: string;
   previewSrc?: string;
   poster?: string;
+  /** Show in the home slider. Films and music videos stay on their own pages only (client request). */
   featured?: boolean;
   summary?: string;
 };
@@ -98,20 +99,40 @@ export const categories: Category[] = [
   },
 ];
 
-// Vimeo's public demo clip, used only so the player can be previewed. Replace it.
-const DEMO_VIMEO = "76979871";
+/** A YouTube video: plays in the viewer, with its full-size YouTube thumbnail (1280×720) as the poster. */
+const youtube = (id: string) => ({ youtubeId: id, poster: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg` });
 
 export const projects: Project[] = [
-  // Films
+  // Films (client list, 2026-11-18)
+  {
+    slug: "katie",
+    category: "films",
+    title: "Katie",
+    director: "Nathan Edward Wright",
+    role: "Editor",
+    shape: "landscape",
+    ...youtube("D8BByEi_fKE"),
+    summary: "Katie, an award-winning 48-hour horror film directed by Nathan Edward Wright. Edited by Dev Patel.",
+  },
+  {
+    slug: "the-rat",
+    category: "films",
+    title: "The Rat",
+    director: "Nathan Edward Wright",
+    role: "Editor & DIT",
+    shape: "landscape",
+    ...youtube("qwPbjjoTsWw"),
+    summary: "The Rat, an award-winning student crime film directed by Nathan Edward Wright. Edited by Dev Patel, who was also DIT.",
+  },
   {
     slug: "the-visit",
     category: "films",
     title: "The Visit",
     director: "Dev Patel",
-    role: "Editor",
+    role: "Writer & Editor",
     shape: "landscape",
-    vimeoId: DEMO_VIMEO,
-    featured: true,
+    ...youtube("0REfNkr_Yt8"),
+    summary: "The Visit, a short film written, directed and edited by Dev Patel.",
   },
   {
     slug: "barkin-dogs",
@@ -120,15 +141,8 @@ export const projects: Project[] = [
     director: "Nathan Edward Wright",
     role: "Editor",
     shape: "landscape",
-    featured: true,
-  },
-  {
-    slug: "short-film-three",
-    category: "films",
-    title: "Title",
-    director: "XYZ",
-    role: "Editor",
-    shape: "landscape",
+    ...youtube("xCi8siWSiqQ"),
+    summary: "Barkin’ Dogs, a 48-hour comedy short film directed by Nathan Edward Wright. Edited by Dev Patel.",
   },
 
   // Youtube
@@ -149,19 +163,17 @@ export const projects: Project[] = [
   { slug: "reel-09", category: "youtube-socials", tab: "socials", title: "Reel 09", shape: "portrait" },
   { slug: "reel-10", category: "youtube-socials", tab: "socials", title: "Reel 10", shape: "square" },
 
-  // Music videos
+  // Music videos (client list, 2026-11-18)
   {
-    slug: "music-video-one",
+    slug: "toxic-love",
     category: "music-videos",
-    title: "Title",
-    director: "XYZ",
+    title: "Toxic Love",
+    director: "Irene Garzón Rollán",
     role: "Editor",
     shape: "landscape",
-    vimeoId: DEMO_VIMEO,
-    featured: true,
+    ...youtube("kvdL5XRVMEQ"),
+    summary: "The official music video for A$iia’s “Toxic Love”, directed by Irene Garzón Rollán. Edited by Dev Patel.",
   },
-  { slug: "music-video-two", category: "music-videos", title: "Title", director: "XYZ", role: "Editor", shape: "landscape" },
-  { slug: "music-video-three", category: "music-videos", title: "Title", director: "XYZ", role: "Colorist", shape: "landscape" },
 
   // Motion
   { slug: "logo-reveal", category: "motion-stills", tab: "motion", title: "Logo Reveal", role: "Motion Graphics", shape: "landscape", featured: true },

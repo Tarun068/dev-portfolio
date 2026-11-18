@@ -22,7 +22,7 @@ export function WorkTabs({ id, accent, tabs, projectsByTab }: Props) {
 
   return (
     <>
-      <div className="container-site mb-8 mt-4 md:mb-[46px] md:mt-[46px]">
+      <div className="container-site">
         <SectionTitle id={id} accent={accent} items={tabs} active={active} onSelect={setActive} />
       </div>
       <div className="container-site overflow-x-clip">

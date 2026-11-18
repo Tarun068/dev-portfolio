@@ -112,7 +112,9 @@ function Form({ onReset }: { onReset: () => void }) {
           key="form"
           action={formAction}
           noValidate
-          className="flex flex-col gap-6"
+          // -mt-2: the first label's line box has ~8px of space above its capitals; pulling it up makes
+          // the visible form (top of "Name" to the bottom of Send) what the page centres.
+          className="-mt-2 flex flex-col gap-6"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}

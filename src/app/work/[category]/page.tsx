@@ -35,7 +35,7 @@ async function CategoryContent({ params }: Pick<PageProps<"/work/[category]">, "
 
   return (
     <>
-      <div className="container-site mb-8 mt-4 md:mb-[46px] md:mt-[46px]">
+      <div className="container-site">
         <SectionTitle id={cat.slug} accent={accent} items={[{ id: cat.slug, label: cat.title }]} active={cat.slug} />
       </div>
       <ProjectList projects={getProjects(cat.slug)} accent={accent} />

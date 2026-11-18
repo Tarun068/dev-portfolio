@@ -134,8 +134,10 @@ export function SiteHeader() {
   const workOpen = openAt === pathname;
 
   return (
-    <header className="container-site relative z-40 pb-(--header-gap) pt-(--page-edge)">
-      <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+    // The gap under the header is measured from the bottom of the nav, like the client PDF: side by side,
+    // the row is exactly as tall as the nav (54px) and the taller name + tagline block hangs into the gap.
+    <header className="container-site relative z-40 py-(--page-edge)">
+      <div className="flex flex-col gap-5 md:h-[54px] md:flex-row md:items-start md:justify-between">
         <Link href="/" className="group block w-fit" aria-label={`${site.name} — home`}>
           <span className="block text-[34px] font-semibold leading-[1] tracking-[-0.01em] sm:text-[40px] lg:text-[48px]">
             {site.name.split("").map((ch, i) => (

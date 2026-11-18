@@ -101,12 +101,10 @@ export function HeroCarousel({ slides }: { slides: Project[] }) {
         ) : null}
       </div>
 
-      {/* Above the button: the same visible gap as between the header text and the slider (the header's
-          bottom padding plus the space under the tagline's baseline). Below it: the same space
-          as the header's top padding, so the page is framed evenly top and bottom. The slider fills the
-          rest of the screen, keeping at least 60% of it (56% on phones) so the page still fits in one
-          screen on 1080p displays. */}
-      <div className="container-site page-pb flex items-center justify-between gap-4 pt-[calc(var(--header-gap)+6px)]">
+      {/* The page's one gap everywhere, as in the PDF: nav to slider, slider to button, button to the
+          bottom of the screen. The slider fills the rest of the screen, keeping at least 60% of it (56%
+          on phones). */}
+      <div className="container-site page-pb flex items-center justify-between gap-4 pt-(--page-edge)">
         <button type="button" onClick={() => go(-1)} aria-label="Previous project" className="-m-3 p-3">
           <ArrowIcon direction="left" />
         </button>

@@ -238,17 +238,20 @@ export function ProjectViewer({ project, siblings, stepper, accent, categoryTitl
       role="dialog"
       aria-modal="true"
       aria-label={current.title}
-      className="fixed inset-0 z-50 flex flex-col overflow-hidden text-paper [--viewer-chrome:230px] md:[--viewer-chrome:300px]"
+      // Spaced like the rest of the site (and PDF pages 3, 6, 7): the page gap from the top to Close,
+      // Close to the media, the media to the title's capitals, and the title's baseline to the bottom.
+      // --viewer-chrome is everything but the media, so a landscape frame fills the height exactly.
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden text-paper [--viewer-chrome:calc(4*var(--page-edge)_+_var(--viewer-close)_+_0.67*var(--viewer-title))] [--viewer-close:48px] [--viewer-title:34px] md:[--viewer-close:54px] md:[--viewer-title:56px] lg:[--viewer-title:64px]"
     >
       <div data-curtain aria-hidden="true" className="absolute inset-0 origin-top bg-ink" style={{ transform: "scaleY(0)" }} />
 
-      <div className="relative flex justify-center pt-5 md:pt-[70px]">
+      <div className="relative flex justify-center pt-(--page-edge)">
         <button
           ref={closeRef}
           type="button"
           data-close
           onClick={close}
-          className="group flex h-12 w-[150px] items-center justify-center gap-3 bg-paper text-[18px] text-ink md:h-[54px] md:w-[168px] md:text-[21px]"
+          className="group flex h-(--viewer-close) w-[150px] items-center justify-center gap-3 bg-paper text-[18px] text-ink md:w-[168px] md:text-[21px]"
           style={{ opacity: 0 }}
         >
           Close
@@ -256,7 +259,7 @@ export function ProjectViewer({ project, siblings, stepper, accent, categoryTitl
         </button>
       </div>
 
-      <div className="relative flex min-h-0 flex-1 items-center justify-center px-4 py-6 md:px-28 md:py-10">
+      <div className="relative flex min-h-0 flex-1 items-center justify-center px-4 py-(--page-edge) md:px-28">
         <div data-media className="relative flex size-full items-center justify-center" style={{ opacity: 0 }}>
           <AnimatePresence mode="popLayout" initial={false} custom={direction}>
             <motion.div
@@ -295,7 +298,7 @@ export function ProjectViewer({ project, siblings, stepper, accent, categoryTitl
       </div>
 
       {/* On phones the arrows sit either side of the title instead. */}
-      <div className="container-site relative flex items-center justify-center gap-4 pb-6 md:pb-12">
+      <div className="container-site relative flex items-center justify-center gap-4">
         {canStep ? <StepButton dir={-1} onStep={step} className="md:hidden" /> : null}
         <div data-title className="min-w-0 flex-1" style={{ opacity: 0 }}>
           <AnimatePresence mode="wait" initial={false}>
@@ -308,7 +311,9 @@ export function ProjectViewer({ project, siblings, stepper, accent, categoryTitl
               transition={{ duration: 0.3, ease: easeOutExpo }}
             >
               <h2
-                className="text-[34px] font-semibold leading-none tracking-[-0.01em] md:text-[56px] lg:text-[64px]"
+                // At line-height 1, Futura's capitals start 0.17em below the box top and the baseline
+                // sits 0.16em above its bottom; the margins put the page gap on those visible edges.
+                className="-mt-[0.17em] mb-[calc(var(--page-edge)-0.16em)] text-(length:--viewer-title) font-semibold leading-none tracking-[-0.01em]"
                 style={{ color: accent }}
               >
                 {current.title}
